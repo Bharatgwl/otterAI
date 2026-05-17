@@ -56,7 +56,7 @@ Context from meeting transcript:
 
 def load_rag_chain():
     vector_store = load_vector_store()
-    retriver = get_retriever()
+    retriever = get_retriever(vector_store)  # fixed: was missing vector_store arg
 
     llm = get_llm()
     prompt = ChatPromptTemplate.from_messages([
@@ -78,7 +78,7 @@ Context from meeting transcript:
 
     rag_chain = (
         {
-            "context":  retriver| RunnableLambda(format_docs),
+            "context":  retriever | RunnableLambda(format_docs),
             "question": RunnablePassthrough(),
         }
         | prompt
@@ -89,8 +89,6 @@ Context from meeting transcript:
     return rag_chain
 
 
-def ask_question(rag_chain, question:str) -> str:
-    print(f"Question : {question}")
-    answer = rag_chain.invoke(question)
-    print(f"answer :{answer}")
-    return answer
+def ask_question(rag_chain, question: str) -> str:
+    """Kept for backward compatibility. Prefer calling rag_chain.invoke() directly."""
+    return rag_chain.invoke(question)

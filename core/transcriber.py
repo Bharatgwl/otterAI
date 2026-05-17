@@ -14,9 +14,9 @@ SARVAM_MODEL = os.getenv("SARVAM_STT_MODEL", "saaras:v2.5")
 def load_model():
     global _model
     if _model is None:
-        print(f"Loading Whisper model: {_model}")
+        print(f"Loading Whisper model: {WHISPER_MODEL}")
         _model = whisper.load_model(WHISPER_MODEL)
-        print(f"Model loaded successfully: {_model}")
+        print(f"Model loaded successfully: {WHISPER_MODEL}")
     return _model
 
 
@@ -24,7 +24,8 @@ def load_model():
 def transcribe_audio_chunk_whisper(chunk_path:str, translate:bool=False)->str:
     model = load_model()
     # task = "translate" if translate else "transcribe"
-    result = model.transcribe(chunk_path, task="transcribe")
+    task = "translate" if translate else "transcribe"
+    result = model.transcribe(chunk_path, task=task)
     return result["text"]
 
 def _send_to_sarvam(piece_path: str) -> str:
